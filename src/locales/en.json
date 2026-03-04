@@ -1,0 +1,70 @@
+{
+  "header": {
+    "title": "Patungan",
+    "tagline": "Split bill anywhere, <i>anytime!</i>"
+  },
+  "tabs": {
+    "orderedFood": "Ordered Food",
+    "participants": "Participants",
+    "claiming": "Claim Items",
+    "summary": "Summary"
+  },
+  "buttons": {
+    "next": "Next",
+    "add": "Add",
+    "delete": "Delete",
+    "back": "Back"
+  },
+  "orderedFood": {
+    "title": "Add Items",
+    "scanReceipt": "Scan Receipt (OCR)",
+    "disabled": "Still working on it! 👨🏻‍💻",
+    "itemName": "Item Name",
+    "price": "Price (IDR)",
+    "quantity": "Qty.",
+    "addItemManually": "+ Add Item Manually"
+  },
+  "participants": {
+    "title": "Participants",
+    "placeholder": "Name",
+    "add": "Add"
+  },
+  "additionalFees": {
+    "title": "Additional Fees",
+    "serviceCharge": "Service Charge",
+    "pbjt": "Tax (PPN)",
+    "selectChoice": "Select choice...",
+    "amount": "Amount",
+    "percentage": "%",
+    "nominal": "Nominal"
+  },
+  "claiming": {
+    "title": "Claim Items",
+    "selectWho": "Select who shared each item. Costs are split automatically.",
+    "tip": "Tip: You can select more than one name per food.",
+    "noItems": "Please add some items and assign them to people!",
+    "nextClaiming": "Next: Claim Items →",
+    "nextSummary": "Next: Summary →"
+  },
+  "summary": {
+    "title": "Summary",
+    "selectStyle": "Select Style:",
+    "searchStyle": "Search style...",
+    "noStyle": "No style found.",
+    "noClaimedItems": "No items have been claimed yet.",
+    "subjectedinIDR": "All prices are subjected in IDR",
+    "madeWithPatungan": "Made with patungan.cc",
+    "splitBillSummary": "Split Bill Summary",
+    "foodSubtotal": "Food Subtotal",
+    "serviceChargeAndTax": "Service Charge & Tax",
+    "startOver": "Start Over",
+    "copyText": "Copy Text",
+    "saveImage": "Save Image",
+    "styles": {
+      "defaultGreen": "Default Green",
+      "minimalClean": "Minimal Clean"
+    }
+  },
+
+  "github": "My Github:"
+}

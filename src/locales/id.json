@@ -1,0 +1,69 @@
+{
+  "header": {
+    "title": "Patungan",
+    "tagline": "Split bill di mana saja, <i>kapan saja!</i>"
+  },
+  "tabs": {
+    "orderedFood": "Makanan Dipesan",
+    "participants": "Peserta",
+    "claiming": "Klaim Item",
+    "summary": "Ringkasan"
+  },
+  "buttons": {
+    "next": "Selanjutnya",
+    "add": "Tambah",
+    "delete": "Hapus",
+    "back": "Kembali"
+  },
+  "orderedFood": {
+    "title": "Tambah Item",
+    "scanReceipt": "Pindai Struk (OCR)",
+    "disabled": "Masih dalam proses! 👨🏻‍💻",
+    "itemName": "Nama Item",
+    "price": "Harga (IDR)",
+    "quantity": "Qty.",
+    "addItemManually": "+ Tambah Item Secara Manual"
+  },
+  "participants": {
+    "title": "Peserta",
+    "placeholder": "Nama",
+    "add": "Tambah"
+  },
+  "additionalFees": {
+    "title": "Biaya Tambahan",
+    "serviceCharge": "Biaya Layanan",
+    "pbjt": "PPN",
+    "selectChoice": "Pilih pilihan...",
+    "amount": "Jumlah",
+    "percentage": "%",
+    "nominal": "Nominal"
+  },
+  "claiming": {
+    "title": "Klaim Item",
+    "selectWho": "Pilih siapa yang berbagi setiap item. Biaya dibagi secara otomatis.",
+    "tip": "Tips: Anda dapat memilih lebih dari satu nama per makanan.",
+    "noItems": "Silakan tambahkan beberapa item dan tetapkan ke orang!",
+    "nextClaiming": "Selanjutnya: Klaim Item →",
+    "nextSummary": "Selanjutnya: Ringkasan →"
+  },
+  "summary": {
+    "title": "Ringkasan",
+    "selectStyle": "Pilih Gaya:",
+    "searchStyle": "Cari gaya...",
+    "noStyle": "Gaya tidak ditemukan.",
+    "noClaimedItems": "Belum ada barang yang diklaim.",
+    "subjectedinIDR": "Semua harga dalam IDR",
+    "madeWithPatungan": "Dibuat dengan patungan.cc",
+    "splitBillSummary": "Ringkasan Split Bill",
+    "foodSubtotal": "Subtotal Makanan",
+    "serviceChargeAndTax": "Biaya Layanan & Pajak",
+    "startOver": "Mulai Ulang",
+    "copyText": "Salin Teks",
+    "saveImage": "Simpan Gambar",
+    "styles": {
+      "defaultGreen": "Hijau Default",
+      "minimalClean": "Minimal Bersih"
+    }
+  },
+  "github": "Github Saya:"
+}
