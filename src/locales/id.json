@@ -17,12 +17,21 @@
   },
   "orderedFood": {
     "title": "Tambah Item",
-    "scanReceipt": "Pindai Struk (OCR)",
-    "disabled": "Masih dalam proses! 👨🏻‍💻",
+    "scanWithAI": "Pindai dengan AI",
+    "scanningAI": "AI sedang menganalisis struk...",
+    "uploadInstruction": "Unggah gambar untuk ekstraksi akurasi tinggi",
+    "scanningWait": "Ini memakan waktu sekitar 5-10 detik",
     "itemName": "Nama Item",
     "price": "Harga (IDR)",
     "quantity": "Qty.",
-    "addItemManually": "+ Tambah Item Secara Manual"
+    "addItemManually": "+ Tambah Item Secara Manual",
+    "toast": {
+      "missingKey": "Kunci API Gemini tidak ditemukan. Harap tambahkan VITE_GEMINI_API_KEY ke file .env Anda.",
+      "processing": "Mengirim ke AI untuk diproses...",
+      "success": "AI berhasil mengekstrak {count} item!",
+      "noItems": "AI tidak dapat menemukan item apa pun di struk ini.",
+      "error": "Gagal memproses struk dengan AI. Pastikan kunci API Anda benar."
+    }
   },
   "participants": {
     "title": "Peserta",
@@ -58,6 +67,10 @@
     "foodSubtotal": "Subtotal Makanan",
     "serviceChargeAndTax": "Biaya Layanan & Pajak",
     "startOver": "Mulai Ulang",
+    "confirmStartOverTitle": "Reset semua data?",
+    "confirmStartOverDesc": "Ini akan menghapus semua item dan peserta serta memuat ulang halaman. Tindakan ini tidak dapat dibatalkan.",
+    "confirmStartOverConfirm": "Ya, mulai ulang",
+    "confirmStartOverCancel": "Batal",
     "copyText": "Salin Teks",
     "saveImage": "Simpan Gambar",
     "styles": {
@@ -65,5 +78,7 @@
       "minimalClean": "Minimal Bersih"
     }
   },
-  "github": "Github Saya:"
+  "github": "Github Saya: ",
+  "donation": "Suka dengan karya saya?",
+  "support": "Yuk, dukung saya di sini!"
 }

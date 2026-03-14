@@ -17,12 +17,21 @@
   },
   "orderedFood": {
     "title": "Add Items",
-    "scanReceipt": "Scan Receipt (OCR)",
-    "disabled": "Still working on it! 👨🏻‍💻",
+    "scanWithAI": "Scan with AI",
+    "scanningAI": "AI is analyzing receipt...",
+    "uploadInstruction": "Upload an image for high-accuracy extraction",
+    "scanningWait": "This takes about 5-10 seconds",
     "itemName": "Item Name",
     "price": "Price (IDR)",
     "quantity": "Qty.",
-    "addItemManually": "+ Add Item Manually"
+    "addItemManually": "+ Add Item Manually",
+    "toast": {
+      "missingKey": "Gemini API Key is missing. Please add VITE_GEMINI_API_KEY to your .env file.",
+      "processing": "Sending to AI for processing...",
+      "success": "AI successfully extracted {count} items!",
+      "noItems": "AI could not find any items on this receipt.",
+      "error": "Failed to process the receipt with AI. Ensure your API key is correct."
+    }
   },
   "participants": {
     "title": "Participants",
@@ -58,6 +67,10 @@
     "foodSubtotal": "Food Subtotal",
     "serviceChargeAndTax": "Service Charge & Tax",
     "startOver": "Start Over",
+    "confirmStartOverTitle": "Reset all data?",
+    "confirmStartOverDesc": "This will clear all items and participants and reload the page. This action cannot be undone.",
+    "confirmStartOverConfirm": "Yes, start over",
+    "confirmStartOverCancel": "Cancel",
     "copyText": "Copy Text",
     "saveImage": "Save Image",
     "styles": {
@@ -66,5 +79,7 @@
     }
   },
 
-  "github": "My Github:"
+  "github": "My Github: ",
+  "donation": "Enjoying my project?",
+  "support": "Consider supporting me here!"
 }
