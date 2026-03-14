@@ -31,15 +31,19 @@ Patungan is a modern web application designed to simplify the process of splitti
 ## Tech Stack
 
 - **Frontend Framework**: Vue 3
+- **Backend Framework**: Node.js + Express
 - **Build Tool**: Vite
 - **State Management**: Pinia
 - **Styling**: Tailwind CSS 4
 - **Internationalization**: vue-i18n v11
+- **AI Integration**: Google Gemini API (server-side)
 - **Additional Libraries**:
   - lucide-vue-next, oh-vue-icons (icons)
   - reka-ui (UI components)
   - html-to-image (export functionality)
   - class-variance-authority (component styling)
+  - multer (file uploads)
+  - cors (CORS handling)
 
 ## Getting Started
 
@@ -57,13 +61,36 @@ git clone https://github.com/dennwill/patungan.git
 cd patungan
 ```
 
-2. Install dependencies:
+2. Install frontend dependencies:
 
 ```bash
 npm install
 ```
 
-3. Start the development server:
+3. Set up the backend:
+
+```bash
+cd backend
+npm install
+```
+
+4. Configure environment variables:
+
+Create a `.env` file in the `backend/` directory with your Gemini API key:
+
+```env
+GEMINI_API_KEY=your_gemini_api_key_here
+PORT=3001
+```
+
+5. Start the backend server:
+
+```bash
+cd backend
+npm start
+```
+
+6. In a new terminal, start the frontend development server:
 
 ```bash
 npm run dev
@@ -98,6 +125,10 @@ src/
 │   ├── Header.vue          # Application header with language toggle
 │   ├── Tabs.vue            # Tab navigation
 │   ├── LanguageToggle.vue  # Language switcher
+backend/
+├── server.js            # Express server for API calls
+├── package.json         # Backend dependencies
+└── .env                 # Backend environment variables
 │   ├── ConfirmDialog.vue  # Popup asking for confirmation to start over
 │   └── ui/                 # Reusable UI components
 ├── stores/              # Pinia state management
