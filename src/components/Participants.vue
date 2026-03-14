@@ -21,17 +21,34 @@
       }}</Button>
     </div>
 
-    <div class="flex gap-2 px-6 py-6">
+    <div
+      class="flex flex-wrap gap-3 px-8 py-4 max-h-[250px] overflow-y-auto scrollbar-thin scrollbar-thumb-slate-200"
+    >
       <Badge
-        v-if="names"
         v-for="(name, idx) in names"
         :key="idx"
-        class="bg-[#95FFA5] text-opacity-70 border-2 border-black border-opacity-20 font-semibold pl-4 hover:bg-green-400 text-[14px]"
-        >{{ name
-        }}<Button variant="primary" class="cursor-pointer" :key="idx" @click="handleDelete(idx)"
-          >X</Button
-        ></Badge
+        class="flex items-center gap-1 bg-[#dcfce7] text-[#166534] border border-[#bbf7d0] font-medium py-1.5 pl-4 pr-1 rounded-full hover:bg-[#bbf7d0] transition-all duration-200 shadow-sm"
       >
+        <span class="text-sm tracking-wide">{{ name }}</span>
+        <button
+          @click="handleDelete(idx)"
+          class="ml-1 p-1 hover:bg-[#166534]/10 rounded-full transition-colors group"
+          aria-label="Remove participant"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-3.5 w-3.5 text-[#166534]/60 group-hover:text-[#166534]"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+              clip-rule="evenodd"
+            />
+          </svg>
+        </button>
+      </Badge>
     </div>
   </main>
 </template>

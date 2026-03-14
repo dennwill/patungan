@@ -8,7 +8,7 @@
             variant="outline"
             role="combobox"
             :aria-expanded="open"
-            class="w-[180px] justify-between bg-white border-slate-200"
+            class="w-[180px] justify-between bg-white border-slate-200 cursor-pointer"
           >
             {{
               selectedStyle
@@ -27,6 +27,7 @@
                 v-for="style in styleOptions"
                 :key="style.value"
                 :value="style.value"
+                class="hover:bg-slate-100 cursor-pointer"
                 @select="
                   (ev) => {
                     selectedStyle = ev.detail.value
@@ -62,7 +63,7 @@
           'bg-white overflow-hidden',
           selectedStyle === 'default'
             ? 'rounded-[40px] border border-[#17D7A5]'
-            : 'rounded-3xl px-10 pt-10 pb-4 pt-12', // Clean minimal container
+            : 'rounded-3xl px-10 pt-10 pb-4 pt-12',
         ]"
       >
         <div v-if="Object.keys(itemStore.personSummary).length > 0">
@@ -161,7 +162,16 @@
           </div>
         </div>
 
-        <div v-else class="p-4 text-center text-slate-400 italic">
+        <div v-else class="pb-10 text-center text-slate-400 italic text-[14px]">
+          <div class="bg-slate-50/50 border-b border-slate-100 mb-6">
+            <h1 class="font-bold text-[20px] text-center text-slate-700 pt-6 pb-3">
+              {{ $t('summary.splitBillSummary') }}
+            </h1>
+            <p class="text-center text-slate-500 text-sm mb-6">{{ todayDate }}</p>
+          </div>
+          <div class="p-6">
+            <v-icon name="fa-inbox" scale="4" />
+          </div>
           {{ $t('summary.noClaimedItems') }}
         </div>
       </main>
@@ -235,6 +245,15 @@
         {{ $t('summary.saveImage') }}
       </button>
     </div>
+
+    <ConfirmDialog
+      v-model:open="confirmOpen"
+      :title="t('summary.confirmStartOverTitle')"
+      :description="t('summary.confirmStartOverDesc')"
+      :confirmText="t('summary.confirmStartOverConfirm')"
+      :cancelText="t('summary.confirmStartOverCancel')"
+      @confirm="handleConfirmStartOver"
+    />
   </div>
 </template>
 
@@ -243,7 +262,6 @@ import { ref, computed } from 'vue'
 import { toPng } from 'html-to-image'
 import { useItemStore } from '@/stores/itemStore'
 import { useNameStore } from '@/stores/nameStore'
-import { storeToRefs } from 'pinia'
 import { useI18n } from 'vue-i18n'
 
 // shadcn-vue imports
@@ -260,6 +278,8 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 
 import { Toaster, toast } from 'vue-sonner'
 import 'vue-sonner/style.css'
+
+import ConfirmDialog from '@/components/ConfirmDialog.vue'
 
 // Stores
 const itemStore = useItemStore()
@@ -286,8 +306,8 @@ const todayDate = computed(() => {
 
 // ============ Action Functions ============
 const summaryRef = ref(null)
+const confirmOpen = ref(false)
 
-// 1. Download as PNG
 const downloadSummary = async () => {
   if (!summaryRef.value) return
 
@@ -310,11 +330,9 @@ const downloadSummary = async () => {
   }
 }
 
-// 2. Copy to Clipboard as Formatted Text
 const copySummaryText = async () => {
   if (Object.keys(itemStore.personSummary).length === 0) return
 
-  // Create a nice, chat-friendly receipt format
   let text = `🧾 *Split Bill Summary*\n📅 ${todayDate.value}\n\n`
 
   for (const [person, data] of Object.entries(itemStore.personSummary)) {
@@ -328,8 +346,9 @@ const copySummaryText = async () => {
     if (data.totalFees > 0) {
       text += `  - Tax & Service: ${Math.round(data.totalFees).toLocaleString()}\n`
     }
-    text += `\n` // Empty line between people
+    text += `\n`
   }
+  text += 'Made with *patungan.cc*'
 
   try {
     await navigator.clipboard.writeText(text.trim())
@@ -340,15 +359,13 @@ const copySummaryText = async () => {
   }
 }
 
-// 3. Start Over
 const startOver = () => {
-  if (confirm('Are you sure you want to start over? This will clear all items and people.')) {
-    // If you configured Pinia stores with standard $reset methods:
-    if (typeof itemStore.$reset === 'function') itemStore.$reset()
-    if (typeof nameStore.$reset === 'function') nameStore.$reset()
-    window.location.reload()
-    // Fallback if $reset isn't configured in your store logic:
-    // window.location.reload()
-  }
+  confirmOpen.value = true
+}
+
+const handleConfirmStartOver = () => {
+  if (typeof itemStore.$reset === 'function') itemStore.$reset()
+  if (typeof nameStore.$reset === 'function') nameStore.$reset()
+  window.location.reload()
 }
 </script>
