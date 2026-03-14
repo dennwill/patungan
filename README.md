@@ -2,12 +2,20 @@
 
 Split bill anywhere, anytime. A web application for easily calculating and managing shared expenses with multiple participants.
 
+## New Update!
+
+- Implemented OCR Reading, no need for manual typing (Do consider supporting me in order to keep this project going and increase token limits for everyone!)
+- Added some visuals
+- Fixed some awkward paddings and margins
+- Improved input handling
+
 ## Description
 
 Patungan is a modern web application designed to simplify the process of splitting bills and managing shared expenses. Whether you're dining out with friends, sharing accommodation costs, or splitting any group expense, Patungan makes it easy to track items, assign them to participants, and automatically calculate each person's share including service charges and taxes.
 
 ## Features
 
+- **OCR Reading**: Detect receipts from images with precise accuracy
 - **Add Items**: Easily add food items with prices and quantities
 - **Manage Participants**: Add and manage the list of people sharing the bill
 - **Smart Item Assignment**: Assign items to one or multiple participants for flexible cost splitting
@@ -28,7 +36,7 @@ Patungan is a modern web application designed to simplify the process of splitti
 - **Styling**: Tailwind CSS 4
 - **Internationalization**: vue-i18n v11
 - **Additional Libraries**:
-  - lucide-vue-next (icons)
+  - lucide-vue-next, oh-vue-icons (icons)
   - reka-ui (UI components)
   - html-to-image (export functionality)
   - class-variance-authority (component styling)
@@ -90,6 +98,7 @@ src/
 │   ├── Header.vue          # Application header with language toggle
 │   ├── Tabs.vue            # Tab navigation
 │   ├── LanguageToggle.vue  # Language switcher
+│   ├── ConfirmDialog.vue  # Popup asking for confirmation to start over
 │   └── ui/                 # Reusable UI components
 ├── stores/              # Pinia state management
 │   ├── itemStore.js        # Item and fee state
@@ -106,10 +115,10 @@ src/
 ## How to Use
 
 1. **Add Items**: Start by adding the items from your bill with their respective prices and quantities
-2. **Add Participants**: Add the names of all people who will share the costs
-3. **Configure Fees**: (Optional) Add service charges and taxes if applicable
+2. **Configure Fees**: (Optional) Add service charges and taxes if applicable
+3. **Add Participants**: Add the names of all people who will share the costs
 4. **Claim Items**: Assign each item to the participants who will share it. Items can be shared among multiple people
-5. **View Summary**: See the final breakdown showing how much each person owes
+5. **View Summary**: See the final breakdown showing how much each person owes. User can opt to copy, or export it to an image.
 
 ## Bilingual Support
 
@@ -121,19 +130,14 @@ The application supports both Indonesian and English:
 
 ## Future Plans
 
-- **OCR Receipt Scanning**: Proper implementation of optical character recognition (OCR) to automatically scan and extract item details from receipt images
-  - Integration with advanced OCR services for higher accuracy
-  - Automatic price and quantity detection
-  - Support for various receipt formats and layouts
-- **Export Functionality**: Export bill summaries as PDF or image
-- **Previous Transactions**: History tracking for past bills
 - **Currency Support**: Multi-currency support for international use
 - **Payment Integration**: Quick payment settlement features
 - **Mobile App**: Native mobile application for iOS and Android
 
 ## Credits
 
-- Logo Design: [@clarissamngndn](https://www.instagram.com/clarissamngndn/)
+Shoutout to the amazing logo designer!  
+Instagram: [@clarissamngndn](https://www.instagram.com/clarissamngndn/)
 
 ## License
 
