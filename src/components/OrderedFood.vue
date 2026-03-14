@@ -107,6 +107,7 @@ import { useItemStore } from '@/stores/itemStore'
 import { storeToRefs } from 'pinia'
 import { toast } from 'vue-sonner'
 import { useI18n } from 'vue-i18n'
+import imageCompression from 'browser-image-compression'
 
 const { t } = useI18n()
 const itemStore = useItemStore()
@@ -155,14 +156,21 @@ const handleFileUpload = async (event) => {
   toast.info(t('orderedFood.toast.processing'))
 
   try {
+    const options = {
+      maxSizeMB: 1,
+      maxWidthOrHeight: 1920,
+      useWebWorker: true,
+    }
+
+    const compressedFile = await imageCompression(file, options)
+
     const formData = new FormData()
-    formData.append('receipt', file)
+    formData.append('receipt', compressedFile, compressedFile.name)
 
     const response = await fetch(`${backendUrl}/api/scan-receipt`, {
       method: 'POST',
       body: formData,
     })
-
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`)
     }
