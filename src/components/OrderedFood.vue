@@ -106,7 +106,6 @@ import Button from './ui/button/Button.vue'
 import { useItemStore } from '@/stores/itemStore'
 import { storeToRefs } from 'pinia'
 import { toast } from 'vue-sonner'
-import { GoogleGenerativeAI } from '@google/generative-ai'
 import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()
@@ -141,30 +140,13 @@ const cleanEmptyRow = (index) => {
   }, 100)
 }
 
-const fileToGenerativePart = async (file) => {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader()
-    reader.onloadend = () => {
-      const base64Data = reader.result.split(',')[1]
-      resolve({
-        inlineData: {
-          data: base64Data,
-          mimeType: file.type,
-        },
-      })
-    }
-    reader.onerror = reject
-    reader.readAsDataURL(file)
-  })
-}
-
 const handleFileUpload = async (event) => {
   const file = event.target.files[0]
   if (!file) return
 
-  const apiKey = import.meta.env.VITE_GEMINI_API_KEY
-  if (!apiKey) {
-    toast.error(t('orderedFood.toast.missingKey'))
+  const backendUrl = import.meta.env.VITE_BACKEND_URL
+  if (!backendUrl) {
+    toast.error('Backend URL not configured')
     event.target.value = ''
     return
   }
@@ -173,51 +155,19 @@ const handleFileUpload = async (event) => {
   toast.info(t('orderedFood.toast.processing'))
 
   try {
-    const genAI = new GoogleGenerativeAI(apiKey)
-    const model = genAI.getGenerativeModel({ model: 'gemini-3-flash-preview' })
+    const formData = new FormData()
+    formData.append('receipt', file)
 
-    const imagePart = await fileToGenerativePart(file)
+    const response = await fetch(`${backendUrl}/api/scan-receipt`, {
+      method: 'POST',
+      body: formData,
+    })
 
-    const prompt = `
-      You are an expert receipt parser. Analyze the attached receipt image and extract the ordered items, as well as any service charge and tax (PPN/PBJT) information.
-      Return ONLY a raw, valid JSON object. Do not use markdown blocks like \`\`\`json.
-      
-      The JSON object MUST have the following exact structure:
-      {
-        "items": [
-          { "name": "string", "price": number, "qty": number }
-        ],
-        "serviceCharge": {
-          "present": boolean,
-          "type": "string", 
-          "amount": number 
-        },
-        "tax": {
-          "present": boolean,
-          "type": "string", 
-          "amount": number 
-        }
-      }
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`)
+    }
 
-      Rules for items:
-      1. If quantity is not explicitly stated, assume 1.
-      2. Prices must be standard numbers (e.g., 25000) without currency symbols or commas.
-      3. DO NOT include subtotal, total, tax, pbjt, service charge, change, or payment methods in the "items" array. Only the actual food/drink items.
-
-      Rules for serviceCharge and tax:
-      1. For "type", use ONLY "%" (if a percentage is explicitly written) or "nominal" (if it is a flat amount).
-      2. STRICT RULE: DO NOT calculate percentages yourself. Unless a percentage symbol (%) or percentage word is explicitly printed on the receipt next to the charge, you MUST default the "type" to "nominal" and extract the flat monetary amount.
-      3. If a service charge is detected, set "present" to true. If it explicitly shows a percentage, set "type" to "%" and extract that number (e.g., 5). Otherwise, set "type" to "nominal" and extract the flat fee (e.g., 15000).
-      4. If a tax (PPN, PB1, PBJT, or Tax) is detected, set "present" to true and follow the exact same explicit percentage vs. nominal rule as above.
-      5. If either is NOT found on the receipt, set its "present" to false, "type" to "nominal", and "amount" to 0.
-    `
-
-    const result = await model.generateContent([prompt, imagePart])
-    const responseText = result.response.text().trim()
-
-    const jsonString = responseText.replace(/^```json\n?|```$/g, '').trim()
-
-    const extractedData = JSON.parse(jsonString)
+    const extractedData = await response.json()
 
     if (
       extractedData.items &&
