@@ -1,7 +1,7 @@
 const express = require('express')
 const multer = require('multer')
 const cors = require('cors')
-const { GoogleGenerativeAI } = require('@google/generative-ai')
+const { GoogleGenAI } = require('@google/genai')
 require('dotenv').config()
 
 const app = express()
@@ -42,15 +42,17 @@ app.post('/api/scan-receipt', upload.single('receipt'), async (req, res) => {
       return res.status(400).json({ error: 'No file uploaded' })
     }
 
-    const genAI = new GoogleGenerativeAI(apiKey)
-    const model = genAI.getGenerativeModel({ model: 'gemini-3-flash-preview' })
+    const ai = new GoogleGenAI({
+      apiKey: apiKey,
+    })
+    const model = 'gemini-3.1-flash-lite-preview'
 
     const imagePart = fileToGenerativePart(req.file.buffer, req.file.mimetype)
 
     const prompt = `
       You are an expert receipt parser. Analyze the attached receipt image and extract the ordered items, as well as any service charge and tax (PPN/PBJT) information.
       Return ONLY a raw, valid JSON object. Do not use markdown blocks like \`\`\`json.
-
+      
       The JSON object MUST have the following exact structure:
       {
         "items": [
@@ -58,28 +60,46 @@ app.post('/api/scan-receipt', upload.single('receipt'), async (req, res) => {
         ],
         "serviceCharge": {
           "present": boolean,
-          "type": "string",
-          "amount": number
+          "type": "string", 
+          "amount": number 
         },
         "tax": {
           "present": boolean,
-          "type": "string",
-          "amount": number
+          "type": "string", 
+          "amount": number 
         }
       }
 
-      Rules:
-      - Extract all food/drink items with their names, prices, and quantities
-      - Look for service charge (biaya layanan, service charge) and tax (PPN, PBJT, tax)
-      - If service charge or tax is a percentage, calculate the amount if possible, otherwise set amount to 0
-      - Ensure prices are numbers (remove currency symbols)
-      - If quantity is not specified, assume 1
-      - Be precise and accurate
+      Rules for items:
+      1. If quantity is not explicitly stated, assume 1.
+      2. Prices must be standard numbers (e.g., 25000) without currency symbols or commas.
+      3. DO NOT include subtotal, total, tax, pbjt, service charge, change, or payment methods in the "items" array. Only the actual food/drink items.
+
+      Rules for serviceCharge and tax:
+      1. For "type", use ONLY "%" (if a percentage is explicitly written) or "nominal" (if it is a flat amount).
+      2. STRICT RULE: DO NOT calculate percentages yourself. Unless a percentage symbol (%) or percentage word is explicitly printed on the receipt next to the charge, you MUST default the "type" to "nominal" and extract the flat monetary amount.
+      3. If a service charge is detected, set "present" to true. If it explicitly shows a percentage, set "type" to "%" and extract that number (e.g., 5). Otherwise, set "type" to "nominal" and extract the flat fee (e.g., 15000).
+      4. If a tax (PPN, PB1, PBJT, or Tax) is detected, set "present" to true and follow the exact same explicit percentage vs. nominal rule as above.
+      5. If either is NOT found on the receipt, set its "present" to false, "type" to "nominal", and "amount" to 0.
     `
 
-    const result = await model.generateContent([prompt, imagePart])
-    const response = await result.response
-    const text = response.text()
+    const generationRequest = {
+      model: model,
+      contents: [
+        {
+          role: 'user',
+          parts: [{ text: prompt }, imagePart],
+        },
+      ],
+    }
+
+    const streamingResp = await ai.models.generateContentStream(generationRequest)
+    let text = ''
+    for await (const chunk of streamingResp) {
+      if (chunk.text) {
+        text += chunk.text
+      }
+    }
 
     // Parse the JSON response
     let parsedData
