@@ -65,22 +65,28 @@
           type="text"
           v-model="item.name"
           @blur="cleanEmptyRow(index)"
-          class="flex h-10 w-1/3 rounded-md border border-slate-200 bg-white px-3 py-2 text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent placeholder:text-slate-400"
+          class="flex h-10 w-1/4 rounded-md border border-slate-200 bg-white px-3 py-2 text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent placeholder:text-slate-400"
           :placeholder="$t('orderedFood.itemName')"
         />
         <input
           type="number"
           v-model.number="item.price"
           @blur="cleanEmptyRow(index)"
-          class="flex h-10 w-1/4 rounded-md border border-slate-200 bg-white px-3 py-2 text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent placeholder:text-slate-400"
+          class="flex h-10 w-1/5 rounded-md border border-slate-200 bg-white px-3 py-2 text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent placeholder:text-slate-400"
           :placeholder="$t('orderedFood.price')"
         />
         <input
           type="number"
           v-model.number="item.qty"
-          class="flex h-10 w-1/4 rounded-md border border-slate-200 bg-white px-3 py-2 text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent placeholder:text-slate-400"
+          class="flex h-10 w-1/6 rounded-md border border-slate-200 bg-white px-3 py-2 text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent placeholder:text-slate-400"
           :placeholder="$t('orderedFood.quantity')"
           max="1000"
+        />
+        <input
+          type="number"
+          v-model.number="item.discount"
+          class="flex h-10 w-1/6 rounded-md border border-slate-200 bg-white px-3 py-2 text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent placeholder:text-slate-400"
+          :placeholder="$t('orderedFood.discount', 'Disc. (-)')"
         />
         <Button @click="itemStore.removeRow(index)" class="bg-red-600 font-bold cursor-pointer"
           >X</Button
@@ -192,8 +198,18 @@ const handleFileUpload = async (event) => {
           price: item.price || 0,
           qty: item.qty || 1,
           sharedBy: [],
+          discount: item.discount || null,
         })
       })
+
+      if (extractedData.globalDiscount?.present) {
+        itemStore.fees.isGlobalDiscount = true
+        itemStore.fees.typeGlobalDiscount =
+          extractedData.globalDiscount.type === 'nominal' ? 'nominal' : '%'
+        itemStore.fees.amountGlobalDiscount = extractedData.globalDiscount.amount
+      } else {
+        itemStore.fees.isGlobalDiscount = false
+      }
 
       if (extractedData.serviceCharge?.present) {
         itemStore.fees.isSC = true

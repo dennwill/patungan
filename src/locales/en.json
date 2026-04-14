@@ -36,7 +36,8 @@
   "participants": {
     "title": "Participants",
     "placeholder": "Name",
-    "add": "Add"
+    "add": "Add",
+    "noParticipants": "No participants added yet."
   },
   "additionalFees": {
     "title": "Additional Fees",

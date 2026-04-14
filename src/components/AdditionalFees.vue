@@ -152,6 +152,82 @@
           placeholder="Amount"
         />
       </div>
+
+      <div class="flex flex-wrap items-center gap-4">
+        <div class="flex items-center gap-3 w-[150px]">
+          <input
+            type="checkbox"
+            id="global-discount"
+            v-model="store.fees.isGlobalDiscount"
+            class="w-4 h-4 cursor-pointer accent-[#17D7A5]"
+          />
+          <label
+            for="global-discount"
+            class="text-sm font-medium leading-none cursor-pointer select-none"
+          >
+            {{ $t('additionalFees.globalDiscount', 'Global Discount') }}
+          </label>
+        </div>
+
+        <Popover v-model:open="openGD" v-if="store.fees.isGlobalDiscount">
+          <PopoverTrigger as-child>
+            <Button
+              variant="outline"
+              role="combobox"
+              :aria-expanded="openGD"
+              class="w-[200px] justify-between transition-all"
+            >
+              {{
+                store.fees.typeGlobalDiscount
+                  ? choices.find((choice) => choice.value === store.fees.typeGlobalDiscount)?.label
+                  : 'Select choice...'
+              }}
+              <ChevronsUpDownIcon class="ml-2 h-4 w-4 shrink-0 opacity-50" />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent class="w-[200px] p-0">
+            <Command>
+              <CommandList>
+                <CommandEmpty>No choice found.</CommandEmpty>
+                <CommandGroup>
+                  <CommandItem
+                    v-for="choice in choices"
+                    :key="choice.value"
+                    :value="choice.value"
+                    @select="
+                      () => {
+                        store.fees.typeGlobalDiscount =
+                          store.fees.typeGlobalDiscount === choice.value ? '' : choice.value
+                        openGD = false
+                      }
+                    "
+                  >
+                    <CheckIcon
+                      :class="
+                        cn(
+                          'mr-2 h-4 w-4',
+                          store.fees.typeGlobalDiscount === choice.value
+                            ? 'opacity-100'
+                            : 'opacity-0',
+                        )
+                      "
+                    />
+                    {{ choice.label }}
+                  </CommandItem>
+                </CommandGroup>
+              </CommandList>
+            </Command>
+          </PopoverContent>
+        </Popover>
+
+        <input
+          type="number"
+          v-if="store.fees.isGlobalDiscount"
+          v-model.number="store.fees.amountGlobalDiscount"
+          class="flex h-10 w-[120px] rounded-md border border-slate-200 bg-white px-3 py-2 text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent placeholder:text-slate-400"
+          placeholder="Amount"
+        />
+      </div>
     </div>
   </main>
 </template>
@@ -183,6 +259,7 @@ const choices = [
 // Keep popover toggles local (they are just UI states)
 const openSC = ref(false)
 const openPBJT = ref(false)
+const openGD = ref(false)
 </script>
 
 <style lang="scss" scoped></style>

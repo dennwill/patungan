@@ -19,10 +19,13 @@ Patungan adalah aplikasi web modern yang dirancang untuk menyederhanakan proses 
 - **Tambah Item**: Tambahkan item makanan dengan mudah beserta harga dan jumlahnya
 - **Kelola Peserta**: Tambahkan dan kelola daftar orang yang akan berbagi tagihan
 - **Penetapan Item Pintar**: Tetapkan item ke satu atau beberapa peserta untuk pembagian biaya yang fleksibel
+- **Sistem Diskon Ganda**: Dukungan untuk diskon per-item dan global
+  - **Diskon Per-Item**: Terapkan diskon pada item tertentu (misalnya Happy Hour, promo BOGO) sebelum dibagi ke peserta
+  - **Diskon Global**: Terapkan diskon ke seluruh tagihan dan distribusikan secara proporsional kepada setiap orang
 - **Biaya Tambahan**: Dukungan untuk perhitungan biaya layanan dan pajak
   - Biaya Layanan: Jumlah tetap atau berbasis persentase
   - Pajak (PPN): Perhitungan pajak Indonesia standar
-- **Perhitungan Otomatis**: Sistem secara otomatis menghitung bagian individu termasuk distribusi biaya proporsional
+- **Perhitungan Otomatis**: Sistem secara otomatis menghitung bagian individu termasuk distribusi biaya dan diskon proporsional
 - **Dukungan Dua Bahasa**: Dukungan penuh untuk bahasa Indonesia (default) dan Inggris
 - **Toggle Bahasa**: Pengguna dapat beralih bahasa kapan saja dengan preferensi yang persisten
 - **Tampilan Ringkasan**: Rincian jelas tentang berapa banyak yang harus dibayar setiap orang

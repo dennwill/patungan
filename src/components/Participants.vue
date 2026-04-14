@@ -16,12 +16,13 @@
         :placeholder="$t('participants.placeholder')"
         @keyup.enter="handleAdd"
       />
-      <Button class="bg-green-600 cursor-pointer" @click="handleAdd">{{
+      <Button class="bg-[#00BFA5] cursor-pointer" @click="handleAdd">{{
         $t('participants.add')
       }}</Button>
     </div>
 
     <div
+      v-if="names.length > 0"
       class="flex flex-wrap gap-3 px-8 py-4 max-h-[250px] overflow-y-auto scrollbar-thin scrollbar-thumb-slate-200"
     >
       <Badge
@@ -32,7 +33,7 @@
         <span class="text-sm tracking-wide">{{ name }}</span>
         <button
           @click="handleDelete(idx)"
-          class="ml-1 p-1 hover:bg-[#166534]/10 rounded-full transition-colors group"
+          class="cursor-pointer ml-1 p-1 hover:bg-[#166534]/10 rounded-full transition-colors group"
           aria-label="Remove participant"
         >
           <svg
@@ -49,6 +50,13 @@
           </svg>
         </button>
       </Badge>
+    </div>
+
+    <div v-else class="pb-10 text-center text-slate-400 italic text-[14px]">
+      <div class="p-6 flex flex-col items-center justify-center gap-3">
+        <v-icon name="co-user-x" scale="4" />
+        {{ $t('participants.noParticipants', 'No participants added yet') }}
+      </div>
     </div>
   </main>
 </template>

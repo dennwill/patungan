@@ -8,6 +8,7 @@ export const useItemStore = defineStore('itemStore', {
         price: null,
         qty: 1,
         sharedBy: [],
+        discount: null,
       },
     ],
     fees: {
@@ -17,6 +18,9 @@ export const useItemStore = defineStore('itemStore', {
       isPBJT: false,
       typePBJT: '%',
       amountPBJT: 11,
+      isGlobalDiscount: false,
+      typeGlobalDiscount: '%',
+      amountGlobalDiscount: 0,
     },
   }),
   actions: {
@@ -26,6 +30,7 @@ export const useItemStore = defineStore('itemStore', {
         price: null,
         qty: 1,
         sharedBy: [],
+        discount: null,
       })
     },
     removeRow(index) {
@@ -37,17 +42,26 @@ export const useItemStore = defineStore('itemStore', {
       const summary = {}
       let grandSubtotal = 0
 
-      // 1. Calculate the base food costs per person
+      // Step 1: Calculate discounted base food costs per person
       state.itemsList.forEach((item) => {
         const participantCount = item.sharedBy?.length || 0
         if (participantCount > 0) {
-          const totalCost = (item.price || 0) * (item.qty || 1)
-          grandSubtotal += totalCost
-          const splitAmount = totalCost / participantCount
+          const totalPrice = (item.price || 0) * (item.qty || 1)
+          const discountAmount = item.discount || 0
+          const baseCost = Math.max(0, totalPrice - discountAmount)
+
+          grandSubtotal += baseCost
+          const splitAmount = baseCost / participantCount
 
           item.sharedBy.forEach((person) => {
             if (!summary[person]) {
-              summary[person] = { subtotal: 0, items: [], totalFees: 0, grandTotal: 0 }
+              summary[person] = {
+                subtotal: 0,
+                items: [],
+                totalDiscount: 0,
+                totalFees: 0,
+                grandTotal: 0,
+              }
             }
             summary[person].subtotal += splitAmount
             summary[person].items.push({ name: item.name || 'Unnamed', cost: splitAmount })
@@ -55,7 +69,16 @@ export const useItemStore = defineStore('itemStore', {
         }
       })
 
-      // 2. Calculate Total Global Fees
+      // Step 2: Calculate total Global Discount
+      let totalGlobalDiscount = 0
+      if (state.fees.isGlobalDiscount) {
+        totalGlobalDiscount =
+          state.fees.typeGlobalDiscount === '%'
+            ? grandSubtotal * (state.fees.amountGlobalDiscount / 100)
+            : state.fees.amountGlobalDiscount
+      }
+
+      // Calculate Total Service Charge
       let totalSC = 0
       if (state.fees.isSC) {
         totalSC =
@@ -64,9 +87,9 @@ export const useItemStore = defineStore('itemStore', {
             : state.fees.amountSC
       }
 
+      // Calculate Total Tax (applied to grandSubtotal + SC)
       let totalPBJT = 0
       if (state.fees.isPBJT) {
-        // Standard Indo Tax: Applied to (Subtotal + Service Charge)
         const baseForTax = grandSubtotal + totalSC
         totalPBJT =
           state.fees.typePBJT === '%'
@@ -76,12 +99,16 @@ export const useItemStore = defineStore('itemStore', {
 
       const totalCombinedFees = totalSC + totalPBJT
 
-      // 3. Distribute Fees Proportionally
+      // Step 3 & 4: Distribute Global Discount and Fees Proportionally
       for (const person in summary) {
         const personShareRatio = grandSubtotal > 0 ? summary[person].subtotal / grandSubtotal : 0
 
+        summary[person].totalDiscount = personShareRatio * totalGlobalDiscount
         summary[person].totalFees = personShareRatio * totalCombinedFees
-        summary[person].grandTotal = summary[person].subtotal + summary[person].totalFees
+
+        // grandTotal = subtotal - proportional global discount + proportional fees
+        summary[person].grandTotal =
+          summary[person].subtotal - summary[person].totalDiscount + summary[person].totalFees
       }
 
       return summary

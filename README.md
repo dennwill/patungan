@@ -19,10 +19,13 @@ Patungan is a modern web application designed to simplify the process of splitti
 - **Add Items**: Easily add food items with prices and quantities
 - **Manage Participants**: Add and manage the list of people sharing the bill
 - **Smart Item Assignment**: Assign items to one or multiple participants for flexible cost splitting
+- **Dual-Discount System**: Support for both per-item and global discounts
+  - **Per-Item Discounts**: Apply discounts to specific items (e.g., Happy Hour, BOGO deals) before splitting among participants
+  - **Global Discounts**: Apply discounts to the entire bill and distribute proportionally to each person
 - **Additional Fees**: Support for service charges and tax calculations
   - Service Charge: Fixed amount or percentage-based
   - Tax (PPN): Standard Indonesian tax calculation
-- **Automatic Calculations**: System automatically calculates individual shares including proportional fee distribution
+- **Automatic Calculations**: System automatically calculates individual shares including proportional fee and discount distribution
 - **Bilingual Support**: Full support for Indonesian (default) and English languages
 - **Language Toggle**: Users can switch between languages at any time with persistent preferences
 - **Summary View**: Clear breakdown of how much each person owes

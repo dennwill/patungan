@@ -36,7 +36,8 @@
   "participants": {
     "title": "Peserta",
     "placeholder": "Nama",
-    "add": "Tambah"
+    "add": "Tambah",
+    "noParticipants": "Belum ada peserta yang ditambahkan."
   },
   "additionalFees": {
     "title": "Biaya Tambahan",

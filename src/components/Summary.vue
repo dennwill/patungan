@@ -103,6 +103,13 @@
                 <span>{{ Math.round(data.subtotal).toLocaleString() }}</span>
               </div>
               <div
+                v-if="data.totalDiscount > 0"
+                class="flex justify-between text-[12px] text-slate-400 font-medium mt-1"
+              >
+                <span>{{ $t('summary.discountApplied', 'Discount Applied') }}</span>
+                <span>- {{ Math.round(data.totalDiscount).toLocaleString() }}</span>
+              </div>
+              <div
                 v-if="data.totalFees > 0"
                 class="flex justify-between text-[12px] text-slate-400 font-medium mt-1"
               >
@@ -139,6 +146,18 @@
                   <span class="font-bold text-slate-500">{{ item.name }}</span>
                   <span class="font-bold text-slate-500 whitespace-nowrap">
                     {{ Math.round(item.cost).toLocaleString().replace(/,/g, ' ') }}
+                  </span>
+                </div>
+
+                <div
+                  v-if="data.totalDiscount > 0"
+                  class="flex justify-between text-base text-slate-400"
+                >
+                  <span class="font-medium">{{
+                    $t('summary.discountApplied', 'Discount Applied')
+                  }}</span>
+                  <span class="font-medium whitespace-nowrap">
+                    - {{ Math.round(data.totalDiscount).toLocaleString().replace(/,/g, ' ') }}
                   </span>
                 </div>
 
@@ -343,8 +362,12 @@ const copySummaryText = async () => {
       text += `  - ${item.name}: ${Math.round(item.cost).toLocaleString()}\n`
     })
 
+    if (data.totalDiscount > 0) {
+      text += `  - Discount: - ${Math.round(data.totalDiscount).toLocaleString()}\n`
+    }
+
     if (data.totalFees > 0) {
-      text += `  - Tax & Service: ${Math.round(data.totalFees).toLocaleString()}\n`
+      text += `  - Tax & Service: + ${Math.round(data.totalFees).toLocaleString()}\n`
     }
     text += `\n`
   }

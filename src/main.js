@@ -5,9 +5,9 @@ import i18n from './i18n'
 import './styles.css'
 
 import { OhVueIcon, addIcons } from 'oh-vue-icons'
-import { MdFastfoodRound, FaUserAlt, FaInbox, CoPlus } from 'oh-vue-icons/icons'
+import { MdFastfoodRound, FaUserAlt, FaInbox, CoPlus, CoUserX } from 'oh-vue-icons/icons'
 
-addIcons(MdFastfoodRound, FaUserAlt, FaInbox, CoPlus)
+addIcons(MdFastfoodRound, FaUserAlt, FaInbox, CoPlus, CoUserX)
 
 const app = createApp(App)
 
