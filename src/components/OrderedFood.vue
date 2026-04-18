@@ -114,6 +114,9 @@ import { storeToRefs } from 'pinia'
 import { toast } from 'vue-sonner'
 import { useI18n } from 'vue-i18n'
 import imageCompression from 'browser-image-compression'
+import { preprocessImage } from '@/utils/imagePreprocess'
+import { recognizeReceipt } from '@/utils/ocr'
+import { parseReceipt } from '@/utils/receiptParser'
 
 const { t } = useI18n()
 const itemStore = useItemStore()
@@ -151,13 +154,6 @@ const handleFileUpload = async (event) => {
   const file = event.target.files[0]
   if (!file) return
 
-  const backendUrl = import.meta.env.VITE_BACKEND_URL
-  if (!backendUrl) {
-    toast.error('Backend URL not configured')
-    event.target.value = ''
-    return
-  }
-
   isScanning.value = true
   toast.info(t('orderedFood.toast.processing'))
 
@@ -169,19 +165,9 @@ const handleFileUpload = async (event) => {
     }
 
     const compressedFile = await imageCompression(file, options)
-
-    const formData = new FormData()
-    formData.append('receipt', compressedFile, compressedFile.name)
-
-    const response = await fetch(`${backendUrl}/api/scan-receipt`, {
-      method: 'POST',
-      body: formData,
-    })
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`)
-    }
-
-    const extractedData = await response.json()
+    const preprocessed = await preprocessImage(compressedFile)
+    const rawText = await recognizeReceipt(preprocessed)
+    const extractedData = parseReceipt(rawText)
 
     if (
       extractedData.items &&
