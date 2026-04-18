@@ -167,7 +167,9 @@ const handleFileUpload = async (event) => {
     const compressedFile = await imageCompression(file, options)
     const preprocessed = await preprocessImage(compressedFile)
     const rawText = await recognizeReceipt(preprocessed)
+    console.log('RAW OCR TEXT:', rawText)
     const extractedData = parseReceipt(rawText)
+    console.log('PARSED DATA:', JSON.stringify(extractedData, null, 2))
 
     if (
       extractedData.items &&

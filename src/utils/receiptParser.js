@@ -1,17 +1,17 @@
-// Patterns for Indonesian + English receipt lines
+// Indonesian receipt format: item name on one line, "qty x Rp.price" on next line
 const P = {
-  itemQty:  /^(.+?)\s+(\d+)\s*[xX]\s*([\d.,]+)/,
-  itemFlat: /^(.+?)\s{2,}([\d.,]+)\s*$/,
-  tax:      /^(ppn|tax|pajak|vat|pb1|pbjt)\b.+?([\d.,]+)\s*$/i,
-  service:  /^(service\s*charge|servis|svc|layanan)\b.+?([\d.,]+)\s*$/i,
-  discount: /^(disc(ount)?|diskon|promo|potongan|voucher)\b.+?([\d.,]+)\s*$/i,
-  pct:      /(\d+(?:[.,]\d+)?)\s*%/,
-  skip:     /^(subtotal|total|tunai|cash|change|kembalian|kredit|debit|bayar|payment|grand|rp\.?\s*$)/i,
-  noise:    /^[-=*#_\s]+$/,
+  priceLine: /^[^a-zA-Z]*(\d+)\s*[xX]\s*[iI]?Rp\.?\s*([\d.,\s]+)/i,
+  tax:       /^(ppn|tax|pajak|vat|pb1|pbjt)\b.+?([\d.,]+)\s*$/i,
+  service:   /^(service\s*charge|servis|svc|layanan)\b.+?([\d.,]+)\s*$/i,
+  discount:  /^(disc(ount)?|diskon|promo|potongan|voucher)\b.+?([\d.,]+)\s*$/i,
+  pct:       /(\d+(?:[.,]\d+)?)\s*%/,
+  skip:      /^(subtotal|total|tunai|cash|change|kembalian|kredit|debit|bayar|payment|grand|struk|nomor|kasir|kode\s+pesanan)/i,
+  noise:     /^[-=*#_\s\\\/|.]{2,}$/,
+  headerish: /^\d{1,2}\s+(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)/i,
 }
 
 function toNum(str) {
-  return parseFloat(str.replace(/\./g, '').replace(',', '.')) || 0
+  return parseFloat(str.replace(/\s/g, '').replace(/\./g, '').replace(',', '.')) || 0
 }
 
 function feeResult(line, amountStr) {
@@ -19,6 +19,10 @@ function feeResult(line, amountStr) {
   return pct
     ? { present: true, type: '%', amount: parseFloat(pct[1].replace(',', '.')) }
     : { present: true, type: 'nominal', amount: toNum(amountStr) }
+}
+
+function isJunkLine(line) {
+  return !line || P.noise.test(line) || P.skip.test(line) || P.headerish.test(line) || line.length < 2
 }
 
 export function parseReceipt(rawText) {
@@ -31,24 +35,46 @@ export function parseReceipt(rawText) {
     tax: { present: false },
   }
 
-  for (const line of lines) {
-    if (P.skip.test(line) || P.noise.test(line)) continue
+  let pendingName = null
 
+  for (const line of lines) {
     let m
 
     if ((m = P.tax.exec(line))) {
       result.tax = feeResult(line, m[2])
-    } else if ((m = P.service.exec(line))) {
+      pendingName = null
+      continue
+    }
+
+    if ((m = P.service.exec(line))) {
       result.serviceCharge = feeResult(line, m[2])
-    } else if ((m = P.discount.exec(line))) {
-      result.globalDiscount = { present: true, type: 'nominal', amount: toNum(m[3]) }
-    } else if ((m = P.itemQty.exec(line))) {
-      result.items.push({ name: m[1].trim(), qty: parseInt(m[2]), price: toNum(m[3]), discount: null })
-    } else if ((m = P.itemFlat.exec(line))) {
+      pendingName = null
+      continue
+    }
+
+    if ((m = P.discount.exec(line))) {
+      result.globalDiscount = { present: true, type: 'nominal', amount: toNum(m[2]) }
+      pendingName = null
+      continue
+    }
+
+    if ((m = P.priceLine.exec(line))) {
+      const qty = parseInt(m[1])
       const price = toNum(m[2])
       if (price > 0) {
-        result.items.push({ name: m[1].trim(), qty: 1, price, discount: null })
+        result.items.push({
+          name: pendingName || 'Item',
+          qty,
+          price,
+          discount: null,
+        })
       }
+      pendingName = null
+      continue
+    }
+
+    if (!isJunkLine(line)) {
+      pendingName = line
     }
   }
 

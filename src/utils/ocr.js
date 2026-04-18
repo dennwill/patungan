@@ -4,15 +4,14 @@ let worker = null
 
 export async function recognizeReceipt(imageBlob, onProgress) {
   if (!worker) {
-    worker = await createWorker(['eng', 'ind'], 1, {
-      logger: onProgress
-        ? (m) => {
-            if (m.status === 'recognizing text') {
-              onProgress(Math.floor(m.progress * 100))
-            }
-          }
-        : undefined,
-    })
+    const opts = onProgress
+      ? {
+          logger: (m) => {
+            if (m.status === 'recognizing text') onProgress(Math.floor(m.progress * 100))
+          },
+        }
+      : {}
+    worker = await createWorker(['eng', 'ind'], 1, opts)
   }
 
   const { data: { text } } = await worker.recognize(imageBlob)
